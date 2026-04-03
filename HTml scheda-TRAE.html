@@ -1,0 +1,758 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TTRPG Character Sheet</title>
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="Style Sheet Trae.css" />
+</head>
+<body>
+  <div class="sheet">
+    <div class="header">
+      <section>
+        <h2 class="block-title">Scheda Personaggio</h2>
+        <div class="field-row">
+          <span class="label">Nome</span>
+          <input type="text" placeholder="Character Name" data-field="name" />
+        </div>
+        <div class="field-row">
+          <span class="label">Razza</span>
+          <div style="display:flex; gap:6px;">
+          <input type="text" placeholder="Race" data-field="race" />
+          <input type="number" placeholder="HP" style="width:50px;" data-field="race_hp" />
+        </div>
+        </div>
+        <div class="field-row">
+          <span class="label">Classe</span>
+          <div style="display:flex; gap:6px;">
+          <input type="text" placeholder="Class" data-field="className" />
+          <input type="number" placeholder="HP" style="width:50px;" data-field="class_hp" />
+        </div>
+        </div>
+      </section>
+      <section>
+        <h2 class="block-title">Historia 
+          <button id="export-pdf">📄 PDF</button>
+          <button id="export-json" title="Esporta dati personaggio (.json)">💾 Salva</button>
+          <button id="import-json" title="Carica dati personaggio (.json)">📂 Carica</button>
+          <input type="file" id="import-file" style="display:none;" accept=".json" />
+        </h2>
+        
+        <div class="field-row">
+          <span class="label">Divinità</span>
+          <input type="text" placeholder="Divinity" data-field="divinity" />
+        </div>
+        <div class="field-row-trio">
+          <div class="field-trio-item">
+            <span class="label">Livello</span>
+            <input type="number" min="1" max="30" placeholder="1" data-field="level" />
+          </div>
+          <div class="field-trio-item">
+            <span class="label">Rank</span>
+            <div class="rank-circle" data-computed="header:rank">1.1</div>
+          </div>
+          <div class="field-trio-item">
+            <span class="label">EXP</span>
+            <input type="text" placeholder="0" data-field="xp" />
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="stat-strip" aria-label="Combat stats">
+      <!-- Left column: Shield + Initiative/Movement -->
+      <div class="stat-left-column">
+       
+        <div class="stat-armor-shield-group">
+          <!-- ROW 1 -->
+          <div class="stat-defense-row">
+            <div class="mini-box">
+              <span>Armor</span>
+              <input type="number" data-field="ac" value="10" />
+            </div>
+            <div class="mini-box">
+              <span>Bonus</span>
+              <input type="number" data-field="bonus_ac" value="0" />
+            </div>
+            <div class="mini-box">
+              <span>Shield</span>
+              <input type="number" data-field="shield_ac" value="0" />
+            </div>
+          </div>
+
+          <!-- ROW 2 -->
+          <div class="stat-defense-row secondary">
+            <div class="mini-box">
+              <span>Parry</span>
+              <input type="number" data-field="shield_parry" value="0" />
+            </div>
+            <div class="mini-box">
+              <span>D</span>
+              <input type="number" data-field="durability" value="0" />
+            </div>
+            <div class="mini-box">
+              <span>SHP</span>
+              <input type="number" data-field="shield_hp" value="0" />
+            </div>
+          </div>
+
+          <!-- TOTAL AC -->
+          <div class="stat-ac-total">
+            <svg class="ac-shield" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+              <path d="M32 2 L58 16 L58 44 C58 50 50 62 32 62 C14 62 6 50 6 44 L6 16 Z" 
+                    fill="#fdf6e3" stroke="#2c1810" stroke-width="2"/>
+            </svg>
+            <div class="ac-content">
+              <div class="ac-value" data-computed="ac_total">10</div>
+              <div class="ac-label">AC</div>
+            </div>
+          </div>
+        </div>
+        
+
+          <div class="stat-init-movement">
+            <div class="init-box">
+        <label>Iniziativa</label>
+        <div class="init-value" data-computed="init">+0</div>
+      </div>
+            <div class="move-box">
+              <label>Velocità (FT)</label>
+              <input type="number" data-field="movement" value="30">
+            </div>
+          </div>
+      </div>
+      
+      <!-- Center: Damage Modifiers, HP Values, Conditions Modifiers -->
+      <div class="stat-heart-wrapper">
+        <div class="stat-center-section stat-damage-modifiers">
+          <h3>Resistances </h3>
+          <textarea placeholder="Resistance and Vulnerability..." data-field="notes.resistances"></textarea>
+        </div>
+        <div class="stat-center-section stat-hp-values">
+          <h3>HP Values</h3>
+          <div class="stat-hp-hearts">
+            <div class="stat-hp-heart-item">
+              <svg viewBox="0 0 24 20" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="white" stroke="var(--ink)" stroke-width="1"/>
+                <text x="12" y="10" data-hp-display="regen">0</text>
+              </svg>
+              <label>Regen</label>
+              <input type="number" min="0" placeholder="0" data-field="hp_regen" />
+            </div>
+            <div class="stat-hp-heart-item">
+              <svg viewBox="0 0 24 20" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="white" stroke="var(--ink)" stroke-width="1"/>
+                <text x="12" y="10" data-hp-display="max">0</text>
+              </svg>
+              <label>Max</label>
+              <div class="hp-max-display" data-computed="hp_max">0</div>
+            </div>
+            <div class="stat-hp-heart-item">
+              <svg viewBox="0 0 24 20" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="white" stroke="var(--ink)" stroke-width="1"/>
+                <text x="12" y="10" data-hp-display="bonus">0</text>
+              </svg>
+              <label>Bonus</label>
+              <input type="number" min="0" placeholder="0" data-field="hp_bonus" />
+            </div>
+            <div class="stat-hp-heart-item stat-hp-actual">
+              <button class="reset-full-btn hp-reset" title="Ripristina HP massimi">Full</button>
+              <svg viewBox="0 0 24 20" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="white" stroke="var(--ink)" stroke-width="1"/>
+                <text x="12" y="10" data-hp-display="actual">0</text>
+                <defs>
+                  <clipPath id="hpClip">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                  </clipPath>
+                </defs>
+
+                <rect id="hpFill" x="0.5" y="0.5" width="23" height="0"
+                      fill="red"
+                      stroke="none"
+                      shape-rendering="geometricPrecision"
+                      clip-path="url(#hpClip)"/>
+
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                      fill="none" stroke="rgba(44,24,16,0.5)"stroke-width="0.3">
+              </svg>
+              <label>HP</label>
+              <input type="number" min="0" placeholder="0" data-field="hp_actual" />
+            </div>
+          </div>
+        </div>
+        <div class="stat-center-section stat-conditions-modifiers">
+          <h3>Active Effects</h3>
+          <textarea placeholder="Enter active effects..." data-field="notes.conditions"></textarea>
+        </div>
+       </div>
+      
+      <!-- Right: Saving Throws & Death Saves -->
+      <div class="stat-saving-throws">
+        <div class="stat-saves-grid">
+          <div class="stat-save-box">
+            <label>Resilienza</label>
+            <input type="text" data-computed="save_fortitude" readonly />
+            <svg class="save-hex" viewBox="-10 -10 20 20" xmlns="http://www.w3.org/2000/svg">
+              <g transform="rotate(240)">
+                <path class="hex-seg" data-save="fortitude" data-rank="1" d="M0 0 L9 0 L4.5 7.79 Z" />
+              </g>
+              <g transform="rotate(300)">
+                <path class="hex-seg" data-save="fortitude" data-rank="2" d="M0 0 L9 0 L4.5 7.79 Z"/>
+              </g>
+              <g transform="rotate(0)">
+                <path class="hex-seg" data-save="fortitude" data-rank="3" d="M0 0 L9 0 L4.5 7.79 Z"/>
+              </g>
+              <g transform="rotate(60)">
+                <path class="hex-seg" data-save="fortitude" data-rank="4" d="M0 0 L9 0 L4.5 7.79 Z"/>
+              </g>
+              <g transform="rotate(120)">
+                <path class="hex-seg" data-save="fortitude" data-rank="5" d="M0 0 L9 0 L4.5 7.79 Z"/>
+              </g>
+              <g transform="rotate(180)">
+                <path class="hex-seg" data-save="fortitude" data-rank="6" d="M0 0 L9 0 L4.5 7.79 Z"/>
+              </g>
+              
+            </svg>
+          </div>
+          <div class="stat-save-box">
+            <label>Riflessi</label>
+           <input type="text" data-computed="save_reflex" readonly />
+            <svg class="save-hex" viewBox="-10 -10 20 20" xmlns="http://www.w3.org/2000/svg">
+              <g transform="rotate(240)">
+                <path class="hex-seg" data-save="reflex" data-rank="1" d="M0 0 L9 0 L4.5 7.79 Z"/>
+              </g>
+              <g transform="rotate(300)">
+                <path class="hex-seg" data-save="reflex" data-rank="2" d="M0 0 L9 0 L4.5 7.79 Z"/>
+              </g>
+              <g transform="rotate(0)">
+                <path class="hex-seg" data-save="reflex" data-rank="3" d="M0 0 L9 0 L4.5 7.79 Z"/>
+              </g>
+              <g transform="rotate(60)">
+                <path class="hex-seg" data-save="reflex" data-rank="4" d="M0 0 L9 0 L4.5 7.79 Z"/>
+              </g>
+              <g transform="rotate(120)">
+                <path class="hex-seg" data-save="reflex" data-rank="5" d="M0 0 L9 0 L4.5 7.79 Z"/>
+              </g>
+              <g transform="rotate(180)">
+                <path class="hex-seg" data-save="reflex" data-rank="6" d="M0 0 L9 0 L4.5 7.79 Z"/>
+              </g>
+            </svg>
+          </div>
+          <div class="stat-save-box">
+            <label>Volontà</label>
+            <input type="text" data-computed="save_will" readonly/>
+            <svg class="save-hex" viewBox="-10 -10 20 20" xmlns="http://www.w3.org/2000/svg">
+              <g transform="rotate(240)">
+                <path class="hex-seg" data-save="will" data-rank="1" d="M0 0 L9 0 L4.5 7.79 Z"/>
+              </g>
+              <g transform="rotate(300)">
+                <path class="hex-seg" data-save="will" data-rank="2" d="M0 0 L9 0 L4.5 7.79 Z"/>
+              </g>
+              <g transform="rotate(0)">
+                <path class="hex-seg" data-save="will" data-rank="3" d="M0 0 L9 0 L4.5 7.79 Z"/>
+              </g>
+              <g transform="rotate(60)">
+                <path class="hex-seg" data-save="will" data-rank="4" d="M0 0 L9 0 L4.5 7.79 Z"/>
+              </g>
+              <g transform="rotate(120)">
+                <path class="hex-seg" data-save="will" data-rank="5" d="M0 0 L9 0 L4.5 7.79 Z"/>
+              </g>
+              <g transform="rotate(180)">
+                <path class="hex-seg" data-save="will" data-rank="6" d="M0 0 L9 0 L4.5 7.79 Z"/>
+              </g>
+            </svg>
+          </div>
+          <div class="stat-save-box">
+            <label>Percezione</label>
+            <input type="text" data-computed="perception_value" readonly/>
+            <svg class="save-hex" viewBox="-10 -10 20 20" xmlns="http://www.w3.org/2000/svg">
+              <g transform="rotate(240)">
+                <path class="hex-seg" data-save="perception" data-rank="1" d="M0 0 L9 0 L4.5 7.79 Z"/>
+              </g>
+              <g transform="rotate(300)">
+                <path class="hex-seg" data-save="perception" data-rank="2" d="M0 0 L9 0 L4.5 7.79 Z"/>
+              </g>
+              <g transform="rotate(0)">
+                <path class="hex-seg" data-save="perception" data-rank="3" d="M0 0 L9 0 L4.5 7.79 Z"/>
+              </g>
+              <g transform="rotate(60)">
+                <path class="hex-seg" data-save="perception" data-rank="4" d="M0 0 L9 0 L4.5 7.79 Z"/>
+              </g>
+              <g transform="rotate(120)">
+                <path class="hex-seg" data-save="perception" data-rank="5" d="M0 0 L9 0 L4.5 7.79 Z"/>
+              </g>
+              <g transform="rotate(180)">
+                <path class="hex-seg" data-save="perception" data-rank="6" d="M0 0 L9 0 L4.5 7.79 Z"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <div class="stat-death-saves">
+          <div class="stat-death-saves-label">Death Saves</div>
+          <div class="stat-death-save-item">
+            <label>Success</label>
+            <div class="death-save-dots">
+              <div class="death-dot" data-death-save="success_1"></div>
+              <div class="death-dot" data-death-save="success_2"></div>
+              <div class="death-dot" data-death-save="success_3"></div>
+            </div>
+          </div>
+          <div class="stat-death-save-item">
+            <label>Failure</label>
+            <div class="death-save-dots">
+              <div class="death-dot" data-death-save="failure_1"></div>
+              <div class="death-dot" data-death-save="failure_2"></div>
+              <div class="death-dot" data-death-save="failure_3"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <h2>Stats</h2>
+      <div class="derived-row" aria-label="Derived quick values">
+        <div class="pill"><span class="pill-label">Init</span><span class="pill-value" data-computed="init">+0</span></div>
+        <div class="pill"><span class="pill-label">Perc</span><span class="pill-value" data-computed="perception">+0</span></div>
+      </div>
+    </section>
+    <div class="main">
+      <aside class="panel">
+        <h3>Benedizioni</h3>
+        <textarea class="writing-area" data-field="notes.benedizioni" placeholder="Scrivi qui..."></textarea>
+      </aside>
+      <section class="wheel-wrap">
+        <div class="wheel" aria-label="Skills wheel">
+          <!-- Your existing SVG (unchanged content) -->
+          <svg viewBox="0 0 350 350" role="img" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="wheelGradient" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" style="stop-color:#fafaf8;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#f5f5f5;stop-opacity:1" />
+              </radialGradient>
+              
+              <!-- 18 curved paths for skill labels (radius 155, curved in opposite direction clockwise) -->
+              <path id="skill-arc-0" d="M148,22 A155,155 0 0,1 202,22" />
+              <path id="skill-arc-1" d="M202,22 A155,155 0 0,1 253,41" />
+              <path id="skill-arc-2" d="M253,41 A155,155 0 0,1 294,75" />
+              <path id="skill-arc-3" d="M294,75 A155,155 0 0,1 321,122" />
+              <path id="skill-arc-4" d="M321,122 A155,155 0 0,1 330,175" />
+              <path id="skill-arc-5" d="M330,175 A155,155 0 0,1 321,228" />
+              <path id="skill-arc-6" d="M321,228 A155,155 0 0,1 294,275" />
+              <path id="skill-arc-7" d="M294,275 A155,155 0 0,1 253,309" />
+              <path id="skill-arc-8" d="M253,309 A155,155 0 0,1 202,328" />
+              <path id="skill-arc-9" d="M202,328 A155,155 0 0,1 148,328" />
+              <path id="skill-arc-10" d="M148,328 A155,155 0 0,1 98,309" />
+              <path id="skill-arc-11" d="M98,309 A155,155 0 0,1 56,275" />
+              <path id="skill-arc-12" d="M56,275 A155,155 0 0,1 29,228" />
+              <path id="skill-arc-13" d="M29,228 A155,155 0 0,1 20,175" />
+              <path id="skill-arc-14" d="M20,175 A155,155 0 0,1 29,122" />
+              <path id="skill-arc-15" d="M29,122 A155,155 0 0,1 56,75" />
+              <path id="skill-arc-16" d="M56,75 A155,155 0 0,1 98,41" />
+              <path id="skill-arc-17" d="M98,41 A155,155 0 0,1 148,22" />
+            </defs>
+             <!-- General Circle size-->
+            <circle cx="175" cy="175" r="168" fill="url(#wheelGradient)"/>
+            <circle cx="175" cy="175" r="168" fill="none" stroke="#2c1810" stroke-width="2.5"/>
+            <circle cx="175" cy="175" r="90" fill="none" stroke="#2c1810" stroke-width="2"/>
+            <circle cx="175" cy="175" r="15" fill="white" stroke="#2c1810" stroke-width="1.2"/>
+            <!-- 18 Radial dividers (outer ring: extend from outer circle to center) -->
+            <g stroke="#2c1810" stroke-width="1.2">
+              <line x1="345" y1="175" x2="266" y2="175" />
+              <line x1="331.86" y1="233.38" x2="260.52" y2="203.69" />
+              <line x1="302.96" y1="283.25" x2="245.03" y2="232.71" />
+              <line x1="258.36" y1="319.43" x2="220.78" y2="254.14" />
+              <line x1="203.95" y1="339.46" x2="190.91" y2="264.52" />
+              <line x1="146.05" y1="339.46" x2="159.09" y2="264.52" />
+              <line x1="91.64" y1="319.43" x2="129.22" y2="254.14" />
+              <line x1="47.04" y1="283.25" x2="104.97" y2="232.71" />
+              <line x1="18.14" y1="233.38" x2="89.48" y2="203.69" />
+              <line x1="6" y1="175" x2="84" y2="175" />
+              <line x1="18.14" y1="116.62" x2="89.48" y2="146.31" />
+              <line x1="47.04" y1="66.75" x2="104.97" y2="117.29" />
+              <line x1="91.64" y1="30.57" x2="129.22" y2="95.86" />
+              <line x1="146.05" y1="10.54" x2="159.09" y2="85.48" />
+              <line x1="203.95" y1="10.54" x2="190.91" y2="85.48" />
+              <line x1="258.36" y1="30.57" x2="220.78" y2="95.86" />
+              <line x1="302.96" y1="66.75" x2="245.03" y2="117.29" />
+              <line x1="331.86" y1="116.62" x2="260.52" y2="146.31" />
+            </g>
+            <g stroke="#2c1810" stroke-width="1.2">
+              <line x1="270" y1="175" x2="205" y2="175" />
+              <line x1="222.5" y1="257.3" x2="190" y2="201" />
+              <line x1="127.5" y1="257.3" x2="160" y2="201" />
+              <line x1="80" y1="175" x2="145" y2="175" />
+              <line x1="127.5" y1="92.7" x2="160" y2="149" />
+              <line x1="222.5" y1="92.7" x2="190" y2="149" />
+            </g>
+
+            <!-- Inner ring: abilities (polar placement + rotated per slice) - now with editable inputs -->
+            <g text-anchor="middle" font-family="Georgia, serif">
+              <!-- Angles: STR -90, DEX -30, CON 30, INT 90, WIS 150, CHA 210 -->
+              <g transform="translate(175,108) rotate(0)">
+                <text y="7" font-size="14" font-weight="bold">STR</text>
+                <foreignObject x="-16" y="8" width="32" height="20"><input type="number" min="0" max="30" value="10" data-ability="str" style="width:36px;height:18px;border:1px solid #2c1810;text-align:center;font-size:12px;font-weight:bold;" /></foreignObject>
+                <text y="40" font-size="12" data-computed="wheel:ability:str:mod">+0</text>
+              </g>
+              <g transform="translate(227,136) rotate(0)">
+                <text y="7" font-size="14" font-weight="bold">DEX</text>
+                <foreignObject x="-16" y="8" width="32" height="20"><input type="number" min="0" max="30" value="10" data-ability="dex" style="width:36px;height:18px;border:1px solid #2c1810;text-align:center;font-size:12px;font-weight:bold;" /></foreignObject>
+                <text y="34" font-size="12" data-computed="wheel:ability:dex:mod">+0</text>
+              </g>
+              <g transform="translate(227,196) rotate(0)">
+                <text y="7" font-size="14" font-weight="bold">CON</text>
+                <foreignObject x="-16" y="8" width="32" height="20"><input type="number" min="0" max="30" value="10" data-ability="con" style="width:36px;height:18px;border:1px solid #2c1810;text-align:center;font-size:12px;font-weight:bold;" /></foreignObject>
+                <text y="34" font-size="12" data-computed="wheel:ability:con:mod">+0</text>
+              </g>
+              <g transform="translate(175,220) rotate(0)">
+                <text y="7" font-size="14" font-weight="bold">INT</text>
+                <foreignObject x="-16" y="8" width="32" height="20"><input type="number" min="0" max="30" value="10" data-ability="int" style="width:36px;height:18px;border:1px solid #2c1810;text-align:center;font-size:12px;font-weight:bold;" /></foreignObject>
+                <text y="34" font-size="12" data-computed="wheel:ability:int:mod">+0</text>
+              </g>
+              <g transform="translate(123,196) rotate(0)">
+                <text y="7" font-size="14" font-weight="bold">WIS</text>
+                <foreignObject x="-16" y="8" width="32" height="20"><input type="number" min="0" max="30" value="10" data-ability="wis" style="width:36px;height:18px;border:1px solid #2c1810;text-align:center;font-size:12px;font-weight:bold;" /></foreignObject>
+                <text y="34" font-size="12" data-computed="wheel:ability:wis:mod">+0</text>
+              </g>
+              <g transform="translate(123,136) rotate(0)">
+                <text y="7" font-size="14" font-weight="bold">CHA</text>
+                <foreignObject x="-16" y="8" width="32" height="20"><input type="number" min="0" max="30" value="10" data-ability="cha" style="width:36px;height:18px;border:1px solid #2c1810;text-align:center;font-size:12px;font-weight:bold;" /></foreignObject>
+                <text y="34" font-size="12" data-computed="wheel:ability:cha:mod">+0</text>
+              </g>
+            </g>
+            <!-- Outer ring: curved skill labels on the outer edge -->
+            <!-- Outer ring: skill names curved along the paths -->
+            <g font-family="Georgia, serif" font-weight="600" text-anchor="middle">
+              <text font-size="11"><textPath href="#skill-arc-0" startOffset="50%">Atletica</textPath></text>
+              <text font-size="9.5"><textPath href="#skill-arc-1" startOffset="50%">Acrobazia</textPath></text>
+              <text font-size="10.5"><textPath href="#skill-arc-2" startOffset="50%">Furtività</textPath></text>
+              <text font-size="9.5"><textPath href="#skill-arc-3" startOffset="50%">Manualità</textPath></text>
+              <text font-size="11"><textPath href="#skill-arc-4" startOffset="50%">Arcana</textPath></text>
+              <text font-size="9.5"><textPath href="#skill-arc-5" startOffset="50%">Creazione</textPath></text>
+              <text font-size="8.5"><textPath href="#skill-arc-6" startOffset="50%">Diplomazia</textPath></text>
+              <text font-size="9.5"><textPath href="#skill-arc-7" startOffset="50%">Intuizione</textPath></text>
+              <text font-size="10.5"><textPath href="#skill-arc-8" startOffset="50%">Memoria</textPath></text>
+              <text font-size="6.6"><textPath href="#skill-arc-9" startOffset="50%">Comunicazione</textPath></text>
+              <text font-size="10"><textPath href="#skill-arc-10" startOffset="50%">Medicina</textPath></text>
+              <text font-size="11"><textPath href="#skill-arc-11" startOffset="50%">Natura</textPath></text>
+              <text font-size="10.5"><textPath href="#skill-arc-12" startOffset="50%">Religione</textPath></text>
+              <text font-size="7"><textPath href="#skill-arc-13" startOffset="50%">Sopravvivenza</textPath></text>
+              <text font-size="10.5"><textPath href="#skill-arc-14" startOffset="50%">Inganno</textPath></text>
+              <text font-size="9.5"><textPath href="#skill-arc-15" startOffset="50%">Intimidire</textPath></text>
+              <text font-size="8"><textPath href="#skill-arc-16" startOffset="50%">Persuasione</textPath></text>
+              <text font-size="7.6"><textPath href="#skill-arc-17" startOffset="50%">Performance</textPath></text>
+            </g>
+            
+            <!-- Skill bonus values (middle radius: 120px from center, aligned to construction lines) -->
+            <g font-family="Georgia, serif" font-weight="bold"  text-anchor="middle" dominant-baseline="middle" font-size="19" stroke="white" stroke-width="0.5">
+              <text x="175" y="55" data-computed="skill:atletica">+0</text>
+              <text x="216" y="61" data-computed="skill:acrobazia">+0</text>
+              <text x="251" y="83" data-computed="skill:arcana">+0</text>
+              <text x="279" y="115" data-computed="skill:creazione">+0</text>
+              <text x="293" y="154" data-computed="skill:comunicazione">+0</text>
+              <text x="293" y="196" data-computed="skill:diplomazia">+0</text>
+              <text x="279" y="235" data-computed="skill:furtivita">+0</text>
+              <text x="251" y="267" data-computed="skill:inganno">+0</text>
+              <text x="216" y="289" data-computed="skill:intuizione">+0</text>
+              <text x="175" y="295" data-computed="skill:intimidazione">+0</text>
+              <text x="134" y="289" data-computed="skill:manualita">+0</text>
+              <text x="99" y="267" data-computed="skill:medicina">+0</text>
+              <text x="71" y="235" data-computed="skill:memoria">+0</text>
+              <text x="57" y="196" data-computed="skill:natura">+0</text>
+              <text x="57" y="154" data-computed="skill:religione">+0</text>
+              <text x="71" y="115" data-computed="skill:performance">+0</text>
+              <text x="99" y="83" data-computed="skill:persuasione">+0</text>
+              <text x="134" y="61" data-computed="skill:sopravvivenza">+0</text>
+            </g>
+
+            <!-- Outer ring: proficiency hex (rank 1..6) - click to set rank -->
+            <g font-family="Georgia, serif" text-anchor="middle">
+              <!-- Hex is split into 6 clickable segments. -->
+              <!-- Each hex positioned at radius ≈ 70 to sit near inner ring -->
+              <g transform="translate(175,82) rotate(240)">
+                <path class="hex-seg" data-skill="atletica" data-rank="1" d="M0 0 L9 0 L4.5 7.794 Z"/><path class="hex-seg" data-skill="atletica" data-rank="2" d="M0 0 L4.5 7.794 L-4.5 7.794 Z"/><path class="hex-seg" data-skill="atletica" data-rank="3" d="M0 0 L-4.5 7.794 L-9 0 Z"/><path class="hex-seg" data-skill="atletica" data-rank="4" d="M0 0 L-9 0 L-4.5 -7.794 Z"/><path class="hex-seg" data-skill="atletica" data-rank="5" d="M0 0 L-4.5 -7.794 L4.5 -7.794 Z"/><path class="hex-seg" data-skill="atletica" data-rank="6" d="M0 0 L4.5 -7.794 L9 0 Z"/>
+              </g>
+              <g transform="translate(208,87) rotate(260)">
+                <path class="hex-seg" data-skill="acrobazia" data-rank="1" d="M0 0 L9 0 L4.5 7.794 Z"/><path class="hex-seg" data-skill="acrobazia" data-rank="2" d="M0 0 L4.5 7.794 L-4.5 7.794 Z"/><path class="hex-seg" data-skill="acrobazia" data-rank="3" d="M0 0 L-4.5 7.794 L-9 0 Z"/><path class="hex-seg" data-skill="acrobazia" data-rank="4" d="M0 0 L-9 0 L-4.5 -7.794 Z"/><path class="hex-seg" data-skill="acrobazia" data-rank="5" d="M0 0 L-4.5 -7.794 L4.5 -7.794 Z"/><path class="hex-seg" data-skill="acrobazia" data-rank="6" d="M0 0 L4.5 -7.794 L9 0 Z"/>
+              </g>
+              <g transform="translate(235,104) rotate(280)">
+                <path class="hex-seg" data-skill="arcana" data-rank="1" d="M0 0 L9 0 L4.5 7.794 Z"/><path class="hex-seg" data-skill="arcana" data-rank="2" d="M0 0 L4.5 7.794 L-4.5 7.794 Z"/><path class="hex-seg" data-skill="arcana" data-rank="3" d="M0 0 L-4.5 7.794 L-9 0 Z"/><path class="hex-seg" data-skill="arcana" data-rank="4" d="M0 0 L-9 0 L-4.5 -7.794 Z"/><path class="hex-seg" data-skill="arcana" data-rank="5" d="M0 0 L-4.5 -7.794 L4.5 -7.794 Z"/><path class="hex-seg" data-skill="arcana" data-rank="6" d="M0 0 L4.5 -7.794 L9 0 Z"/>
+              </g>
+              <g transform="translate(256,129) rotate(300)">
+                <path class="hex-seg" data-skill="creazione" data-rank="1" d="M0 0 L9 0 L4.5 7.794 Z"/><path class="hex-seg" data-skill="creazione" data-rank="2" d="M0 0 L4.5 7.794 L-4.5 7.794 Z"/><path class="hex-seg" data-skill="creazione" data-rank="3" d="M0 0 L-4.5 7.794 L-9 0 Z"/><path class="hex-seg" data-skill="creazione" data-rank="4" d="M0 0 L-9 0 L-4.5 -7.794 Z"/><path class="hex-seg" data-skill="creazione" data-rank="5" d="M0 0 L-4.5 -7.794 L4.5 -7.794 Z"/><path class="hex-seg" data-skill="creazione" data-rank="6" d="M0 0 L4.5 -7.794 L9 0 Z"/>
+              </g>
+              <g transform="translate(267,159) rotate(320)">
+                <path class="hex-seg" data-skill="comunicazione" data-rank="1" d="M0 0 L9 0 L4.5 7.794 Z"/><path class="hex-seg" data-skill="comunicazione" data-rank="2" d="M0 0 L4.5 7.794 L-4.5 7.794 Z"/><path class="hex-seg" data-skill="comunicazione" data-rank="3" d="M0 0 L-4.5 7.794 L-9 0 Z"/><path class="hex-seg" data-skill="comunicazione" data-rank="4" d="M0 0 L-9 0 L-4.5 -7.794 Z"/><path class="hex-seg" data-skill="comunicazione" data-rank="5" d="M0 0 L-4.5 -7.794 L4.5 -7.794 Z"/><path class="hex-seg" data-skill="comunicazione" data-rank="6" d="M0 0 L4.5 -7.794 L9 0 Z"/>
+              </g>
+              <g transform="translate(267,191) rotate(340)">
+                <path class="hex-seg" data-skill="diplomazia" data-rank="1" d="M0 0 L9 0 L4.5 7.794 Z"/><path class="hex-seg" data-skill="diplomazia" data-rank="2" d="M0 0 L4.5 7.794 L-4.5 7.794 Z"/><path class="hex-seg" data-skill="diplomazia" data-rank="3" d="M0 0 L-4.5 7.794 L-9 0 Z"/><path class="hex-seg" data-skill="diplomazia" data-rank="4" d="M0 0 L-9 0 L-4.5 -7.794 Z"/><path class="hex-seg" data-skill="diplomazia" data-rank="5" d="M0 0 L-4.5 -7.794 L4.5 -7.794 Z"/><path class="hex-seg" data-skill="diplomazia" data-rank="6" d="M0 0 L4.5 -7.794 L9 0 Z"/>
+              </g>
+              <g transform="translate(256,222) rotate(360)">
+                <path class="hex-seg" data-skill="furtivita" data-rank="1" d="M0 0 L9 0 L4.5 7.794 Z"/><path class="hex-seg" data-skill="furtivita" data-rank="2" d="M0 0 L4.5 7.794 L-4.5 7.794 Z"/><path class="hex-seg" data-skill="furtivita" data-rank="3" d="M0 0 L-4.5 7.794 L-9 0 Z"/><path class="hex-seg" data-skill="furtivita" data-rank="4" d="M0 0 L-9 0 L-4.5 -7.794 Z"/><path class="hex-seg" data-skill="furtivita" data-rank="5" d="M0 0 L-4.5 -7.794 L4.5 -7.794 Z"/><path class="hex-seg" data-skill="furtivita" data-rank="6" d="M0 0 L4.5 -7.794 L9 0 Z"/>
+              </g>
+              <g transform="translate(235,246) rotate(20)">
+                <path class="hex-seg" data-skill="inganno" data-rank="1" d="M0 0 L9 0 L4.5 7.794 Z"/><path class="hex-seg" data-skill="inganno" data-rank="2" d="M0 0 L4.5 7.794 L-4.5 7.794 Z"/><path class="hex-seg" data-skill="inganno" data-rank="3" d="M0 0 L-4.5 7.794 L-9 0 Z"/><path class="hex-seg" data-skill="inganno" data-rank="4" d="M0 0 L-9 0 L-4.5 -7.794 Z"/><path class="hex-seg" data-skill="inganno" data-rank="5" d="M0 0 L-4.5 -7.794 L4.5 -7.794 Z"/><path class="hex-seg" data-skill="inganno" data-rank="6" d="M0 0 L4.5 -7.794 L9 0 Z"/>
+              </g>
+              <g transform="translate(208,263) rotate(40)">
+                <path class="hex-seg" data-skill="intuizione" data-rank="1" d="M0 0 L9 0 L4.5 7.794 Z"/><path class="hex-seg" data-skill="intuizione" data-rank="2" d="M0 0 L4.5 7.794 L-4.5 7.794 Z"/><path class="hex-seg" data-skill="intuizione" data-rank="3" d="M0 0 L-4.5 7.794 L-9 0 Z"/><path class="hex-seg" data-skill="intuizione" data-rank="4" d="M0 0 L-9 0 L-4.5 -7.794 Z"/><path class="hex-seg" data-skill="intuizione" data-rank="5" d="M0 0 L-4.5 -7.794 L4.5 -7.794 Z"/><path class="hex-seg" data-skill="intuizione" data-rank="6" d="M0 0 L4.5 -7.794 L9 0 Z"/>
+              </g>
+              <g transform="translate(175,268) rotate(60)">
+                <path class="hex-seg" data-skill="intimidazione" data-rank="1" d="M0 0 L9 0 L4.5 7.794 Z"/><path class="hex-seg" data-skill="intimidazione" data-rank="2" d="M0 0 L4.5 7.794 L-4.5 7.794 Z"/><path class="hex-seg" data-skill="intimidazione" data-rank="3" d="M0 0 L-4.5 7.794 L-9 0 Z"/><path class="hex-seg" data-skill="intimidazione" data-rank="4" d="M0 0 L-9 0 L-4.5 -7.794 Z"/><path class="hex-seg" data-skill="intimidazione" data-rank="5" d="M0 0 L-4.5 -7.794 L4.5 -7.794 Z"/><path class="hex-seg" data-skill="intimidazione" data-rank="6" d="M0 0 L4.5 -7.794 L9 0 Z"/>
+              </g>
+              <g transform="translate(142,263) rotate(80)">
+                <path class="hex-seg" data-skill="manualita" data-rank="1" d="M0 0 L9 0 L4.5 7.794 Z"/><path class="hex-seg" data-skill="manualita" data-rank="2" d="M0 0 L4.5 7.794 L-4.5 7.794 Z"/><path class="hex-seg" data-skill="manualita" data-rank="3" d="M0 0 L-4.5 7.794 L-9 0 Z"/><path class="hex-seg" data-skill="manualita" data-rank="4" d="M0 0 L-9 0 L-4.5 -7.794 Z"/><path class="hex-seg" data-skill="manualita" data-rank="5" d="M0 0 L-4.5 -7.794 L4.5 -7.794 Z"/><path class="hex-seg" data-skill="manualita" data-rank="6" d="M0 0 L4.5 -7.794 L9 0 Z"/>
+              </g>
+              <g transform="translate(115,246) rotate(100)">
+                <path class="hex-seg" data-skill="medicina" data-rank="1" d="M0 0 L9 0 L4.5 7.794 Z"/><path class="hex-seg" data-skill="medicina" data-rank="2" d="M0 0 L4.5 7.794 L-4.5 7.794 Z"/><path class="hex-seg" data-skill="medicina" data-rank="3" d="M0 0 L-4.5 7.794 L-9 0 Z"/><path class="hex-seg" data-skill="medicina" data-rank="4" d="M0 0 L-9 0 L-4.5 -7.794 Z"/><path class="hex-seg" data-skill="medicina" data-rank="5" d="M0 0 L-4.5 -7.794 L4.5 -7.794 Z"/><path class="hex-seg" data-skill="medicina" data-rank="6" d="M0 0 L4.5 -7.794 L9 0 Z"/>
+              </g>
+              <g transform="translate(94,222) rotate(120)">
+                <path class="hex-seg" data-skill="memoria" data-rank="1" d="M0 0 L9 0 L4.5 7.794 Z"/><path class="hex-seg" data-skill="memoria" data-rank="2" d="M0 0 L4.5 7.794 L-4.5 7.794 Z"/><path class="hex-seg" data-skill="memoria" data-rank="3" d="M0 0 L-4.5 7.794 L-9 0 Z"/><path class="hex-seg" data-skill="memoria" data-rank="4" d="M0 0 L-9 0 L-4.5 -7.794 Z"/><path class="hex-seg" data-skill="memoria" data-rank="5" d="M0 0 L-4.5 -7.794 L4.5 -7.794 Z"/><path class="hex-seg" data-skill="memoria" data-rank="6" d="M0 0 L4.5 -7.794 L9 0 Z"/>
+              </g>
+              <g transform="translate(83,191) rotate(140)">
+                <path class="hex-seg" data-skill="natura" data-rank="1" d="M0 0 L9 0 L4.5 7.794 Z"/><path class="hex-seg" data-skill="natura" data-rank="2" d="M0 0 L4.5 7.794 L-4.5 7.794 Z"/><path class="hex-seg" data-skill="natura" data-rank="3" d="M0 0 L-4.5 7.794 L-9 0 Z"/><path class="hex-seg" data-skill="natura" data-rank="4" d="M0 0 L-9 0 L-4.5 -7.794 Z"/><path class="hex-seg" data-skill="natura" data-rank="5" d="M0 0 L-4.5 -7.794 L4.5 -7.794 Z"/><path class="hex-seg" data-skill="natura" data-rank="6" d="M0 0 L4.5 -7.794 L9 0 Z"/>
+              </g>
+              <g transform="translate(83,159) rotate(160)">
+                <path class="hex-seg" data-skill="religione" data-rank="1" d="M0 0 L9 0 L4.5 7.794 Z"/><path class="hex-seg" data-skill="religione" data-rank="2" d="M0 0 L4.5 7.794 L-4.5 7.794 Z"/><path class="hex-seg" data-skill="religione" data-rank="3" d="M0 0 L-4.5 7.794 L-9 0 Z"/><path class="hex-seg" data-skill="religione" data-rank="4" d="M0 0 L-9 0 L-4.5 -7.794 Z"/><path class="hex-seg" data-skill="religione" data-rank="5" d="M0 0 L-4.5 -7.794 L4.5 -7.794 Z"/><path class="hex-seg" data-skill="religione" data-rank="6" d="M0 0 L4.5 -7.794 L9 0 Z"/>
+              </g>
+              <g transform="translate(94,129) rotate(180)">
+                <path class="hex-seg" data-skill="performance" data-rank="1" d="M0 0 L9 0 L4.5 7.794 Z"/><path class="hex-seg" data-skill="performance" data-rank="2" d="M0 0 L4.5 7.794 L-4.5 7.794 Z"/><path class="hex-seg" data-skill="performance" data-rank="3" d="M0 0 L-4.5 7.794 L-9 0 Z"/><path class="hex-seg" data-skill="performance" data-rank="4" d="M0 0 L-9 0 L-4.5 -7.794 Z"/><path class="hex-seg" data-skill="performance" data-rank="5" d="M0 0 L-4.5 -7.794 L4.5 -7.794 Z"/><path class="hex-seg" data-skill="performance" data-rank="6" d="M0 0 L4.5 -7.794 L9 0 Z"/>
+              </g>
+              <g transform="translate(115,104) rotate(200)">
+                <path class="hex-seg" data-skill="persuasione" data-rank="1" d="M0 0 L9 0 L4.5 7.794 Z"/><path class="hex-seg" data-skill="persuasione" data-rank="2" d="M0 0 L4.5 7.794 L-4.5 7.794 Z"/><path class="hex-seg" data-skill="persuasione" data-rank="3" d="M0 0 L-4.5 7.794 L-9 0 Z"/><path class="hex-seg" data-skill="persuasione" data-rank="4" d="M0 0 L-9 0 L-4.5 -7.794 Z"/><path class="hex-seg" data-skill="persuasione" data-rank="5" d="M0 0 L-4.5 -7.794 L4.5 -7.794 Z"/><path class="hex-seg" data-skill="persuasione" data-rank="6" d="M0 0 L4.5 -7.794 L9 0 Z"/>
+              </g>
+              <g transform="translate(142,87) rotate(220)">
+                <path class="hex-seg" data-skill="sopravvivenza" data-rank="1" d="M0 0 L9 0 L4.5 7.794 Z"/><path class="hex-seg" data-skill="sopravvivenza" data-rank="2" d="M0 0 L4.5 7.794 L-4.5 7.794 Z"/><path class="hex-seg" data-skill="sopravvivenza" data-rank="3" d="M0 0 L-4.5 7.794 L-9 0 Z"/><path class="hex-seg" data-skill="sopravvivenza" data-rank="4" d="M0 0 L-9 0 L-4.5 -7.794 Z"/><path class="hex-seg" data-skill="sopravvivenza" data-rank="5" d="M0 0 L-4.5 -7.794 L4.5 -7.794 Z"/><path class="hex-seg" data-skill="sopravvivenza" data-rank="6" d="M0 0 L4.5 -7.794 L9 0 Z"/>
+              </g>
+            </g>
+          </svg>
+        </div>
+      </section>
+      <aside class="panel">
+        <h3>Privilegi Razziali</h3>
+        <textarea class="writing-area" data-field="notes.privilegi" placeholder="Scrivi qui..."></textarea>
+      </aside>
+    </div>
+    <section class="bottom">
+      <h2>Abilità</h2>
+
+      <div class="bottom-grid" id="cards-container"></div>
+
+      <button id="add-card">+ Aggiungi abilità</button>
+    </section>
+  </div>
+
+    // PAGE 2 - Additional features, blessings, inventory
+    <div class="sheet second-page">
+
+      <div class="page-top">
+
+        <!-- LEFT -->
+        <div class="panel features-column">
+          <h2 class="block-title">Additional Features</h2>
+          <textarea class="writing-area" data-field="notes.features"></textarea>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="panel right-column">
+
+          <h2 class="block-title">Divine Blessings</h2>
+
+          <div class="blessing-box">
+            <div class="blessing-title"><input type="text" placeholder="Blessing Name" data-field="blessings.0.name"></div>
+            <textarea class="blessing-desc" data-field="blessings.0.desc"></textarea>
+          </div>
+
+          <div class="blessing-box">
+            <div class="blessing-title"><input type="text" placeholder="Blessing Name" data-field="blessings.1.name"></div>
+            <textarea class="blessing-desc" data-field="blessings.1.desc"></textarea>
+          </div>
+
+          <div class="blessing-box">
+            <div class="blessing-title"><input type="text" placeholder="Blessing Name" data-field="blessings.2.name"></div>
+            <textarea class="blessing-desc" data-field="blessings.2.desc"></textarea>
+          </div>
+
+          <div class="blessing-box">
+            <div class="blessing-title"><input type="text" placeholder="Blessing Name" data-field="blessings.3.name"></div>
+            <textarea class="blessing-desc" data-field="blessings.3.desc"></textarea>
+          </div>
+
+          <h2 class="block-title">Character Notes</h2>
+          <textarea class="writing-area notes-area" data-field="notes.character"></textarea>
+
+        </div>
+
+      </div>
+
+      <div class="panel inventory-section">
+        <h2 class="block-title inventory-title">Inventory</h2>
+
+        <div class="inventory-layout">
+
+          <!-- COLONNA 1 -->
+          <div class="inventory-column" id="inv-col-1">
+            <div class="inventory-controls">
+              <button id="add-item">+ Item</button>
+              <button id="remove-item">− Remove</button>
+            </div>
+            <!-- le righe verranno generate dinamicamente da JS -->
+          </div>
+
+          <!-- COLONNA 2 -->
+          <div class="inventory-column" id="inv-col-2">
+          </div>
+
+          <!-- COLONNA 3: monete + peso -->
+          <div class="inventory-side">
+            <div class="coins-box">
+              <div class="coin"><span>CP</span><input type="number" data-field="coins.CP"></div>
+              <div class="coin"><span>SP</span><input type="number" data-field="coins.SP"></div>
+              <div class="coin"><span>EP</span><input type="number" data-field="coins.EP"></div>
+              <div class="coin"><span>GP</span><input type="number" data-field="coins.GP"></div>
+              <div class="coin"><span>PP</span><input type="number" data-field="coins.PP"></div>
+            </div>
+
+            <div class="weight-box">
+              <div class="weight-icon">⚖️</div>
+              <div class="weight-value">0 lb</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- SPELLBOOK GENERATOR -->
+    <button id="generate-spellbook">Generate Spellbook</button>
+
+    <h2 class="spellbook-title">Spellbook</h2>
+
+    <!-- SPELLBOOK CONTAINER -->
+    <div id="spellbook-wrapper"></div>
+
+    <div class="spellbook-sheet" id="spellbook-sheet">
+        <button class="spellbook-delete" id="remove-spellbook">🗑️</button>
+
+        <div class="spellbook-layout">
+          <!-- Left Column: 3/5 - Stats & Info -->
+          <div class="spellbook-left-col">
+            <!-- Row 1: Info -->
+            <div class="sb-info-row">
+              <div class="sb-field main-field">
+                <label>Spellbook</label>
+                <input type="text" placeholder="Inserire classe" data-field="spellbooks.0.class">
+              </div>
+              <div class="sb-field small">
+                <label>Preparate</label>
+                <input type="number" data-field="spellbooks.0.prepared">
+              </div>
+              <div class="sb-field small">
+                <label>Max Lvl</label>
+                <input type="number" data-field="spellbooks.0.maxLvl">
+              </div>
+            </div>
+
+            <!-- Row 2: Offensive Stats -->
+            <div class="sb-stats-row">
+              <div class="sb-stat-box strong">
+                <label>Stat</label>
+                <select class="sb-ability-select" data-field="spellbooks.0.ability">
+                  <option value="str">STR</option>
+                  <option value="dex">DEX</option>
+                  <option value="con">CON</option>
+                  <option value="int">INT</option>
+                  <option value="wis">WIS</option>
+                  <option value="cha">CHA</option>
+                </select>
+              </div>
+              <div class="sb-stat-box strong">
+                <label>Spell Bonus</label>
+                <div class="sb-bonus-group">
+                  <div class="sb-stat-display" data-computed="spellbook.bonus">+0</div>
+                  <svg class="sb-hex" viewBox="-10 -10 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <g transform="rotate(240)">
+                      <path class="hex-seg" data-spellbook-hex="0" data-rank="1" d="M0 0 L9 0 L4.5 7.794 Z" />
+                    </g>
+                    <g transform="rotate(300)">
+                      <path class="hex-seg" data-spellbook-hex="0" data-rank="2" d="M0 0 L9 0 L4.5 7.794 Z"/>
+                    </g>
+                    <g transform="rotate(0)">
+                      <path class="hex-seg" data-spellbook-hex="0" data-rank="3" d="M0 0 L9 0 L4.5 7.794 Z"/>
+                    </g>
+                    <g transform="rotate(60)">
+                      <path class="hex-seg" data-spellbook-hex="0" data-rank="4" d="M0 0 L9 0 L4.5 7.794 Z"/>
+                    </g>
+                    <g transform="rotate(120)">
+                      <path class="hex-seg" data-spellbook-hex="0" data-rank="5" d="M0 0 L9 0 L4.5 7.794 Z"/>
+                    </g>
+                    <g transform="rotate(180)">
+                      <path class="hex-seg" data-spellbook-hex="0" data-rank="6" d="M0 0 L9 0 L4.5 7.794 Z"/>
+                    </g>
+                  </svg>
+                </div>
+              </div>
+              <div class="sb-stat-box strong">
+                <label>Spell DC</label>
+                <div class="sb-stat-display" data-computed="spellbook.dc">10</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: 2/5 - Mana & Regen -->
+          <div class="spellbook-right-col">
+            <div class="mana-container">
+              <!-- Mana Drop SVG -->
+              <div class="mana-drop-wrapper">
+                <button class="reset-full-btn mana-reset" title="Ripristina Mana massimo">Full</button>
+                <svg viewBox="0 0 30 42" class="mana-drop-svg" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <clipPath id="manaClip">
+                      <path d="M15 0 C15 0 0 17.5 0 28 A15 15 0 0 0 30 28 C30 17.5 15 0 15 0 Z" />
+                    </clipPath>
+                  </defs>
+                  <!-- Background Drop -->
+                  <path d="M15 0 C15 0 0 17.5 0 28 A15 15 0 0 0 30 28 C30 17.5 15 0 15 0 Z" 
+                        fill="#e0f0ff" stroke="var(--ink)" stroke-width="1"/>
+                  <!-- Fill Level -->
+                  <rect id="manaFill" x="0" y="0" width="30" height="42" fill="#3498db" clip-path="url(#manaClip)" />
+                </svg>
+                <div class="mana-values">
+                  <input type="number" class="mana-actual" data-field="spellbooks.0.mana_actual" placeholder="0">
+                  <div class="mana-divider">|</div>
+                  <input type="number" class="mana-max" data-field="spellbooks.0.mana_max" placeholder="0">
+                </div>
+                <label class="mana-label">Mana</label>
+              </div>
+
+              <!-- Regen Vertical Boxes -->
+              <div class="mana-regen-column">
+                <div class="regen-box">
+                  <label>Emergency</label>
+                  <div class="sb-regen-display" data-computed="spellbook.regen.0">0</div>
+                </div>
+                <div class="regen-box">
+                  <label>Short</label>
+                  <div class="sb-regen-display" data-computed="spellbook.regen.1">0</div>
+                </div>
+                <div class="regen-box">
+                  <label>Long</label>
+                  <div class="sb-regen-display" data-computed="spellbook.regen.2">0</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="spellbook-body">
+          <div id="spellbook-cards"></div>
+          
+        </div>
+      </div>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+  <script src="JS schedaTRAE.js"></script>
+
+</body>
+</html>
